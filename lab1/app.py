@@ -50,9 +50,3 @@ class App:
         self.sender.join()
         self.receiver.close()
         self.receiver.join()
-
-    @staticmethod
-    def __parse(args=None):
-
-        for key, value in default_settings.items():
-            print(f'{key}: {value}')
