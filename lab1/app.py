@@ -16,11 +16,12 @@ default_settings = {
 
 
 class App:
-    def __init__(self, args: list):
+    def __init__(self, args):
         Parser.parse(args=' '.join(*args), default_settings=default_settings)
         for key, value in default_settings.items():
             print(key + ': ', value)
 
+        self.uuid = uuid.uuid4()
         self.sender = Sender(
             port=int(default_settings['port']),
 
@@ -28,7 +29,8 @@ class App:
             if default_settings['group'] == 'IPv4' else default_settings['mcast6'],
 
             ttl=int(default_settings['ttl']),
-            group=default_settings['group']
+            group=default_settings['group'],
+            uuid=self.uuid
         )
 
         self.receiver = Receiver(
@@ -38,7 +40,8 @@ class App:
             if default_settings['group'] == 'IPv4' else default_settings['mcast6'],
 
             ttl=int(default_settings['ttl']),
-            group=default_settings['group']
+            group=default_settings['group'],
+            uuid=self.uuid
         )
 
     def start(self):
@@ -46,6 +49,7 @@ class App:
         self.receiver.start()
 
     def close(self):
+        print(123)
         self.sender.close()
         self.sender.join()
         self.receiver.close()
