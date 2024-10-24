@@ -3,6 +3,7 @@ import sys
 from time import sleep
 from parser import Parser
 from client import Client
+from stoppable import StoppableThread
 
 default_settings = {
     'port': '5123',
@@ -12,25 +13,23 @@ default_settings = {
 }
 
 
-class ClientApp:
+class ClientApp(StoppableThread):
     def __init__(self, args):
+        super().__init__()
         Parser.parse(args=' '.join(*args), default_settings=default_settings)
         for key, value in default_settings.items():
             print(key + ': ', value)
         self.client = Client(default_settings)
 
-    def join(self):
-        self.client.join()
-
-    def start(self):
+    def run(self):
         self.client.start()
+        while not self.client.is_stopped:
+            sleep(0.5)
+        self.close()
 
     def close(self):
         self.client.close()
-
-    @property
-    def is_closed(self):
-        return self.client.is_stopped
+        self.client.join()
 
 
 def main(*args):
@@ -38,13 +37,15 @@ def main(*args):
 
     try:
         client_app.start()
-        while not client_app.is_closed:
+        while not client_app.client.is_stopped:
             sleep(0.5)
+
     except KeyboardInterrupt:
         print("interrupted")
         client_app.close()
         sys.exit(0)
-    client_app.join()
+
+    # client_app.join()
     sys.exit(0)
 
 

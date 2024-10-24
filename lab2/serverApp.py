@@ -5,6 +5,7 @@ from os import path, makedirs
 from time import sleep
 from acceptor import Acceptor
 from parser import Parser
+from stoppable import StoppableThread
 
 
 default_settings = {
@@ -16,8 +17,9 @@ default_settings = {
 }
 
 
-class ServerApp:
+class ServerApp(StoppableThread):
     def __init__(self, args):
+        super().__init__()
         Parser.parse(args=' '.join(*args), default_settings=default_settings)
         for key, value in default_settings.items():
             print(key + ': ', value)
@@ -33,7 +35,11 @@ class ServerApp:
         files_dir = path.join(path.curdir, self.path)
         makedirs(files_dir, exist_ok=True)
 
-    def start(self):
+    def close_acceptor(self):
+        self.acceptor.close()
+        self.acceptor.join()
+
+    def run(self):
         self.__create_directory()
 
         self.acceptor = Acceptor(self.port,
@@ -44,9 +50,10 @@ class ServerApp:
 
         self.acceptor.start()
 
-    def close(self):
-        self.acceptor.close()
-        self.acceptor.join()
+        while not self.is_stopped:
+            sleep(0.5)
+
+        self.close_acceptor()
 
 
 def main(*args):
@@ -60,6 +67,7 @@ def main(*args):
     except KeyboardInterrupt:
         print("interrupted")
         server_app.close()
+        server_app.join()
         sys.exit(0)
 
 
