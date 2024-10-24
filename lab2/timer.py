@@ -18,7 +18,6 @@ class TimeCounterThread(StoppableThread):
 
     def run(self):
         while not self._stop_event.wait(self.interval):
-            print(123123123)
             self.log()
         self.log(total=True)
 

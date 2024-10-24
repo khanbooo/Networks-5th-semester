@@ -37,8 +37,6 @@ class Acceptor(StoppableThread):
             socket.SO_REUSEADDR,
             True
         )
-        # self.socket.setsockopt(socket.SOL_SOCKET, socket.SO_SNDBUF, 65536)  # Установка размера буфера отправки
-        # self.socket.setsockopt(socket.SOL_SOCKET, socket.SO_RCVBUF, 65536)  # Установка размера буфера получения
         self.socket.setsockopt(socket.IPPROTO_TCP, socket.TCP_NODELAY, 1)
         self.socket.settimeout(self.timeout)
 

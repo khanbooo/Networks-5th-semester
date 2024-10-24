@@ -43,11 +43,11 @@ class Parser:
                     if not re.fullmatch(pattern, arg_pair_splitted[-1]):
                         raise TypeError('Incorrect IP group format\0')
 
-                elif arg_pair_splitted[0] == 'path':
-                    print(arg_pair_splitted[0], '|||', arg_pair_splitted[1])
-                    pattern = r'([A-Za-z]:\\)?((?:.*\\)?)([\w\s]+\.\w+)'
-                    if not re.fullmatch(pattern, arg_pair_splitted[-1]):
-                        raise TypeError('Incorrect path format\0')
+                # elif arg_pair_splitted[0] == 'path':
+                #     print(arg_pair_splitted[0], '|||', arg_pair_splitted[1])
+                #     pattern = r'([A-Za-z]:\\)?((?:.*\\)?)([\w\s]+\.\w+)'
+                #     if not re.fullmatch(pattern, arg_pair_splitted[-1]):
+                #         raise TypeError('Incorrect path format\0')
 
                 default_settings[arg_pair_splitted[0]] = arg_pair_splitted[1]
 

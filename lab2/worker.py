@@ -59,17 +59,12 @@ class Worker(StoppableThread):
             is_last = int(data[0])
             length = int.from_bytes(data[1:5], "big")
             message = data[5:5 + length]
-            # print(data[0:5])
-            # print(is_last)
 
             self.fd.write(message)
             self.bytes_read += length
-            # print(length)
-            # print(data)
             self.timer.update(time.time_ns(), length)
             if is_last:
                 self.is_last_received = True
-                # self.close()
 
         except socket.timeout:
             #################
@@ -79,7 +74,6 @@ class Worker(StoppableThread):
         try:
             size_info = self.socket.recv(4)
             info_size_decoded = int.from_bytes(size_info[0:4], "big")
-            print(f'info message size = {info_size_decoded}')
 
             data = self.socket.recv(info_size_decoded)
             if not data:
@@ -108,12 +102,8 @@ class Worker(StoppableThread):
 
         self.init_fd()
 
-        # i = 0
         while not self.is_last_received and not self._stop_event.wait(self.delay):
-            # print(i)
             self.receive_message()
-            # i += 1
-        # print(123123123)
         self.timer.close()
 
         if self.is_stopped:

@@ -10,7 +10,7 @@ class StoppableThread(threading.Thread):
         self._stop_event.set()
 
     @property
-    def stopped(self) -> threading.Event():
+    def is_stopped(self) -> threading.Event():
         return self._stop_event.is_set()
 
     def close(self) -> None:
